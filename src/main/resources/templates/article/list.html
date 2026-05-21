@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章列表</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 40px 0;
+        }
+        .list-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            padding: 35px 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.07);
+        }
+        .page-title {
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #333;
+        }
+        .search-form {
+            background: #f7f8fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            border-top: none;
+        }
+        .tag-badge {
+            margin-right: 5px;
+            font-size: 12px;
+            padding: 4px 8px;
+        }
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="list-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-title mb-0">📄 文章列表</h2>
+            <a href="/article/add" class="btn btn-primary">+ 发布新文章</a>
+        </div>
+
+        <!-- 组合查询 -->
+        <form class="row g-3 search-form align-items-center" method="get">
+            <div class="col-md-3">
+                <input type="text" name="title" class="form-control" placeholder="标题关键字" th:value="${title}">
+            </div>
+            <div class="col-md-2">
+                <select name="tagId" class="form-select">
+                    <option value="">所有标签</option>
+                    <option th:each="tag : ${tags}" th:value="${tag.id}"
+                            th:selected="${tagId == tag.id}" th:text="${tag.name}"></option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="datetime-local" name="startTime" class="form-control" th:value="${startTime}">
+            </div>
+            <div class="col-md-2">
+                <input type="datetime-local" name="endTime" class="form-control" th:value="${endTime}">
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-1">查询</button>
+                <a href="/article/list" class="btn btn-outline-secondary flex-1">重置</a>
+            </div>
+        </form>
+
+        <!-- 文章表格 -->
+        <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>文章标题</th>
+                <th>标签</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="article : ${page.list}">
+                <td>[[${article.id}]]</td>
+                <td class="fw-medium">[[${article.title}]]</td>
+                <td>
+                    <span th:each="tag : ${article.tags}" class="badge bg-info tag-badge" th:text="${tag.name}"></span>
+                </td>
+                <td>[[${article.createTime}]]</td>
+                <td>
+                    <a th:href="@{/article/detail/{id}(id=${article.id})}" class="btn btn-sm btn-primary">查看详情</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- 分页 -->
+        <nav>
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/article/list(pageNum=1, title=${title}, tagId=${tagId}, startTime=${startTime}, endTime=${endTime})}">首页</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/article/list(pageNum=${page.prePage}, title=${title}, tagId=${tagId}, startTime=${startTime}, endTime=${endTime})}">上一页</a>
+                </li>
+                <li class="page-item active">
+                    <span class="page-link">[[${page.pageNum}]]</span>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/article/list(pageNum=${page.nextPage}, title=${title}, tagId=${tagId}, startTime=${startTime}, endTime=${endTime})}">下一页</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/article/list(pageNum=${page.pages}, title=${title}, tagId=${tagId}, startTime=${startTime}, endTime=${endTime})}">尾页</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+</body>
+</html>

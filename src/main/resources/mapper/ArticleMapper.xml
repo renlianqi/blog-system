@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.mapper.ArticleMapper">
+
+    <!-- 新增文章 -->
+    <insert id="insertArticle" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO article(title, content)
+        VALUES (#{title}, #{content})
+    </insert>
+
+    <!-- 文章-标签关联 -->
+    <insert id="insertArticleTag">
+        INSERT INTO article_tag(article_id, tag_id)
+        VALUES (#{articleId}, #{tagId})
+    </insert>
+
+    <!-- 组合条件分页查询文章 -->
+    <select id="selectArticleList" resultType="com.blog.entity.Article">
+        SELECT DISTINCT a.*
+        FROM article a
+        LEFT JOIN article_tag at ON a.id = at.article_id
+        LEFT JOIN tag t ON at.tag_id = t.id
+        <where>
+            <if test="title != null and title != ''">
+                AND a.title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="tagId != null">
+                AND t.id = #{tagId}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND a.create_time >= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND a.create_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <!-- 查询文章详情 + 标签列表 -->
+    <select id="selectArticleById" resultMap="ArticleTagMap">
+        SELECT
+        a.id,
+        a.title,
+        a.content,
+        a.create_time,
+        a.update_time,
+        t.id AS t_id,
+        t.name AS t_name
+        FROM article a
+        LEFT JOIN article_tag at ON a.id = at.article_id
+        LEFT JOIN tag t ON at.tag_id = t.id
+        WHERE a.id = #{id}
+    </select>
+
+    <!-- 结果映射：文章 + 标签集合 -->
+    <resultMap id="ArticleTagMap" type="com.blog.entity.Article">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+
+        <collection property="tags" ofType="com.blog.entity.Tag">
+            <id column="t_id" property="id"/>
+            <result column="t_name" property="name"/>
+        </collection>
+    </resultMap>
+
+    <!-- 删除文章关联标签 -->
+    <delete id="deleteArticleTag">
+        DELETE FROM article_tag WHERE article_id = #{articleId}
+    </delete>
+
+</mapper>

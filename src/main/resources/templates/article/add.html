@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布文章</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 30px 0;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .form-title {
+            text-align: center;
+            margin-bottom: 35px;
+            font-weight: 600;
+            color: #333;
+        }
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .tag-item {
+            padding: 6px 14px;
+            background: #f1f3f5;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tag-item:hover {
+            background: #e9ecef;
+        }
+        input[type="checkbox"] {
+            margin-right: 6px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="form-container">
+        <h2 class="form-title">✍️ 发布新文章</h2>
+
+        <form th:action="@{/article/add}" method="post">
+            <div class="mb-4">
+                <label class="form-label fw-semibold">文章标题</label>
+                <input type="text" name="title" class="form-control form-control-lg"
+                       placeholder="请输入标题" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">文章内容</label>
+                <textarea name="content" class="form-control" rows="10"
+                          placeholder="请输入内容" required></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">选择标签</label>
+                <div class="tag-group">
+                    <div th:each="tag : ${tags}" class="tag-item">
+                        <input type="checkbox" name="tagIds" th:value="${tag.id}" th:id="'tag' + ${tag.id}">
+                        <label th:for="'tag' + ${tag.id}" th:text="${tag.name}"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end mt-4">
+                <a href="/article/list" class="btn btn-outline-secondary">← 返回列表</a>
+                <button type="submit" class="btn btn-primary">发布文章</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

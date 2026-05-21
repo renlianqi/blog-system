@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章详情</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f7fa;
+            padding: 40px 0;
+        }
+        .article-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            padding: 40px;
+        }
+        .article-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #222;
+        }
+        .tag-badge {
+            margin-right: 8px;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        .info-line {
+            color: #666;
+            font-size: 15px;
+        }
+        .article-content {
+            font-size: 17px;
+            line-height: 2;
+            color: #333;
+            text-indent: 2em;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+            <div class="article-card">
+                <!-- 文章标题 -->
+                <h2 class="article-title text-center mb-4" th:text="${article.title}"></h2>
+
+                <!-- 标签与时间 -->
+                <div class="text-center mb-3">
+                    <span class="info-line me-4">
+                        创建时间：<span th:text="${article.createTime}"></span>
+                    </span>
+                    <span>
+                        文章标签：
+                        <span th:each="tag : ${article.tags}" class="badge bg-success tag-badge" th:text="${tag.name}"></span>
+                    </span>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- 文章正文 -->
+                <div class="article-content" th:text="${article.content}"></div>
+
+                <hr class="my-4">
+
+                <!-- 返回按钮 -->
+                <div class="text-center">
+                    <a href="/article/list" class="btn btn-outline-primary px-4">← 返回文章列表</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
