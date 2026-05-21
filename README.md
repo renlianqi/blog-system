@@ -9,8 +9,8 @@
 - 前端：HTML + Thymeleaf
 
 ## 快速开始
-1. 克隆项目：`git clone https://github.com/你的用户名/blog-system.git`
-2. 配置数据库连接（修改 `application.yml`）
+1. 克隆项目：`git clone https://github.com/renlianqi/blog-system.git`
+2. 配置数据库连接
 3. 启动项目：运行 `BlogSystemApplication.java`
 
 ## 功能说明
